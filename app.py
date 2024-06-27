@@ -2,6 +2,7 @@ from flask import Flask, make_response, jsonify, request
 from db import db
 from flask_migrate import Migrate
 from models.tarefa import Tarefa
+from middleware.valida_tarefa import valida_tarefa
 
 app = Flask(__name__)
 app.json.sort_keys = False
@@ -27,7 +28,9 @@ def get_tarefas():
               400
          ) 
 
+
 @app.route('/tarefa', methods=['POST'])
+@valida_tarefa
 def create_tarefa():
     try:
         data = request.get_json()
