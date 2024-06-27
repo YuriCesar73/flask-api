@@ -10,6 +10,7 @@ class Tarefa(db.Model):
     isFavorito = db.Column(db.Boolean, default=False)
     isFinalizado = db.Column(db.Boolean, default=False)
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
+    date_updated = db.Column(db.DateTime, default=datetime.utcnow)
 
 
     def as_dict(self):
@@ -19,5 +20,6 @@ class Tarefa(db.Model):
             'descricao': self.descricao,
             'isFavorito': str(self.isFavorito),
             'isFinalizado': str(self.isFinalizado),
-            'date_created': str(self.date_created)
+            'date_created': str(self.date_created),
+            'date_updated': str(self.date_updated)
         }

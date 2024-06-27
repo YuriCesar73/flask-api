@@ -3,6 +3,8 @@ from db import db
 from flask_migrate import Migrate
 from models.tarefa import Tarefa
 from middleware.valida_tarefa import valida_tarefa
+from datetime import datetime
+
 
 app = Flask(__name__)
 app.json.sort_keys = False
@@ -63,16 +65,17 @@ def get_tarefa(id):
 @app.route('/tarefa/<int:id>', methods=['PUT'])
 def update_tarefa(id):
     try:
-        tarefa = Tarefa.query.get_or_404(id)
+        tarefa:Tarefa = Tarefa.query.get_or_404(id)
         data = request.get_json()
         for key, value in data.items():
                 setattr(tarefa, key, value)
+        tarefa.date_updated = datetime.utcnow()
         db.session.commit()
         return make_response(
             jsonify(
             {'message': 'Tarefa atualizada com sucesso!', 'data': tarefa.as_dict()}
             ),
-            400 
+            200 
         ) 
     except:
         return make_response(
