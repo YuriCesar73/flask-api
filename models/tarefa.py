@@ -1,5 +1,4 @@
 from sqlalchemy.dialects.postgresql import TEXT
-from sqlalchemy import func
 from db import db
 from datetime import datetime
 
@@ -9,6 +8,7 @@ class Tarefa(db.Model):
     descricao = db.Column(TEXT(), nullable=False)
     isFavorito = db.Column(db.Boolean, default=False)
     isFinalizado = db.Column(db.Boolean, default=False)
+    responsavel_id = db.Column(db.Integer, db.ForeignKey('responsavel.id'), nullable=False)
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
     date_updated = db.Column(db.DateTime, default=datetime.utcnow)
 
@@ -20,6 +20,7 @@ class Tarefa(db.Model):
             'descricao': self.descricao,
             'isFavorito': str(self.isFavorito),
             'isFinalizado': str(self.isFinalizado),
+            'responsavel': str(self.responsavel_id),
             'date_created': str(self.date_created),
             'date_updated': str(self.date_updated)
         }

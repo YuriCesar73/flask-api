@@ -1,5 +1,5 @@
 from functools import wraps
-from flask import Response, request, make_response, jsonify
+from flask import request, make_response, jsonify
 
 def valida_tarefa(func):
     @wraps(func)

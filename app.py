@@ -1,6 +1,7 @@
 from flask import Flask, make_response, jsonify, request
 from db import db
 from flask_migrate import Migrate
+from models.responsavel import Responsavel
 from models.tarefa import Tarefa
 from middleware.valida_tarefa import valida_tarefa
 from datetime import datetime
@@ -36,7 +37,7 @@ def get_tarefas():
 def create_tarefa():
     try:
         data = request.get_json()
-        novaTarefa = Tarefa(titulo=data['titulo'], descricao=data['descricao'], )
+        novaTarefa = Tarefa(titulo=data['titulo'], descricao=data['descricao'], responsavel_id=data['responsavel_id'])
         db.session.add(novaTarefa)
         db.session.commit()
         return make_response(
@@ -96,7 +97,35 @@ def delete_tarefa(id):
               message="Não existe tarefa com id: {}".format(id)
           ),
           404
-      )   
+      )
+
+@app.route('/responsavel', methods=['POST'])
+def create_responsavel():
+    try:         
+        data = request.get_json()
+        responsavel = Responsavel(nome=data['nome'], email=data['email'])
+        db.session.add(responsavel)
+        db.session.commit()
+        return make_response(
+            jsonify(
+                message='Pessoa criada com sucesso!',
+                data=responsavel.as_dict()
+            ),
+            201
+        )
+    except:
+        return make_response(jsonify(message='Ocorreu um erro'), 400)
+
+@app.route('/responsavel', methods=['GET'])
+def get_pessoas():
+    try:
+        responsaveis = Responsavel.query.all()
+        return make_response(
+            jsonify([responsavel.as_dict() for responsavel in responsaveis])
+        )
+    except:
+        return make_response(jsonify(message='Ocorreu um erro'), 400)
+
 
 
 if __name__ == '__main__':
