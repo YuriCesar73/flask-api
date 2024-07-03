@@ -1,6 +1,7 @@
 from flask import Flask, make_response, jsonify, request
 from db import db
 from flask_migrate import Migrate
+from error_handler.tarefa_error_handler import InvalidAPIUsage
 from models.responsavel import Responsavel
 from models.tarefa import Tarefa
 from middleware.valida_tarefa import valida_tarefa
@@ -48,7 +49,7 @@ def create_tarefa():
             201
         )
     except:
-         return make_response(jsonify(message='Ocorreu um erro'), 400)
+        return make_response(jsonify(message='Ocorreu um erro'), 400)
 
 @app.route('/tarefa/<int:id>', methods=['GET'])
 def get_tarefa(id):
@@ -56,12 +57,13 @@ def get_tarefa(id):
         tarefa = Tarefa.query.get_or_404(id)
         return jsonify(tarefa.as_dict())
     except:
-         return make_response(
-              jsonify(
-                   message="Não existe tarefa com o id: {}" .format(id)
-              ),
-              404
-         )
+        raise InvalidAPIUsage("Tarefa não encontrada", status_code=404, payload={'error': 'A tarefa com o id {} não existe!'.format(id), 'rota': '/tarefa/{}'.format(id)})
+        #  return make_response(
+        #       jsonify(
+        #            message="Não existe tarefa com o id: {}" .format(id)
+        #       ),
+        #       404
+        #  )
 
 @app.route('/tarefa/<int:id>', methods=['PUT'])
 def update_tarefa(id):
@@ -127,6 +129,22 @@ def get_pessoas():
         return make_response(jsonify(message='Ocorreu um erro'), 400)
 
 
+# from werkzeug.exceptions import HTTPException
+
+# @app.errorhandler(HTTPException)
+# def not_found_resource(error):
+#     print("####################################################")
+#     print(error.code)
+#     print(error.name)
+#     print(error.description)
+
+#     return jsonify(
+#         erro='teste {}'.format(error)
+#     )
+
+@app.errorhandler(InvalidAPIUsage)
+def invalid_api_usage(e):
+    return jsonify(e.to_dict()), e.status_code
 
 if __name__ == '__main__':
     app.run(debug=True)
