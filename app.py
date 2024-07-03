@@ -11,7 +11,7 @@ from datetime import datetime
 app = Flask(__name__)
 app.json.sort_keys = False
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://yuri:929305@localhost/tarefas'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:gsort123@localhost/tarefas'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)

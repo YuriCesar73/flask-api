@@ -4,7 +4,7 @@ db = SQLAlchemy()
 
 
 
-#CRIA O BANCO DE DADOS
+# CRIA O BANCO DE DADOS
 # def create_database():
 #     with app.app_context():
 #         db.create_all() 
